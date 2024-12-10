@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Analyse - EMFNet</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/color-brewer.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">EMFNet</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../emfnet/" class="nav-link">A propos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../schemas/" class="nav-link">Schémas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../nutanix/" class="nav-link">Nutanix</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../centralisatonAD.md" class="nav-link">Centralisation AD</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#analyse" class="nav-link">Analyse</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#cahier-des-charges" class="nav-link">Cahier des charges</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#conception" class="nav-link">Conception</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#situation-initiale" class="nav-link">Situation initiale</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#situation-desiree" class="nav-link">Situation désirée</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#agdlp" class="nav-link">AGDLP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#realisation" class="nav-link">Réalisation</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#integration-sur-ad" class="nav-link">Intégration sur AD</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#openvpn" class="nav-link">OpenVPN</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#jumphost" class="nav-link">Jumphost</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#radius" class="nav-link">Radius</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="analyse">Analyse</h1>
+<p>Pour ce projet, le but est de mettre en place un serveur Active Directory pour centraliser tous les accès EMFNet. L’idée est de rediriger l’authentification des systèmes (Radius, Nutanix, VPN, etc.) vers cet AD afin de pouvoir n’utiliser plus qu’un seul login pour tous les systèmes et ainsi éviter de devoir se souvenir quel compte correspond à quel appareil ou interface.</p>
+<h2 id="cahier-des-charges">Cahier des charges</h2>
+<ul>
+<li>Centraliser les accès des systèmes vers un AD</li>
+<li>Mettre en place un serveur Active Directory</li>
+<li>Le serveur RADIUS relaie les requêtes à l’AD</li>
+<li>Création de groupes / utilisateurs</li>
+<li>Gestion des droits</li>
+<li>Migration des services<ul>
+<li>Radius</li>
+<li>Nutanix</li>
+<li>PRTG</li>
+<li>SonicWall</li>
+</ul>
+</li>
+<li>Migration des utilisateurs</li>
+<li>Rédiger une documentation pour les utilisateurs</li>
+</ul>
+<h1 id="conception">Conception</h1>
+<h2 id="situation-initiale">Situation initiale</h2>
+<p>Sur le schéma ci-dessous, lorsqu’un utilisateur souhaite se connecter à un périphérique réseau ou à des interfaces de management, il lui faut utiliser plusieurs identifiants différents. Cela implique une mise en place d’outils comme KeePass pour pouvoir se rappeler quel mot de passe et quel nom d’utilisateur utiliser pour se connecter.
+Ici, il nous faut 6 comptes et mot de passe différents à retenir :
+<img alt="Situation initale" src="../images/centralisationAD_initiale.png" /></p>
+<h2 id="situation-desiree">Situation désirée</h2>
+<p>Notre projet consiste donc à centraliser tous les accès afin que l’utilisateur puisse accéder aux périphériques et aux interfaces avec un seul et même identifiant :</p>
+<p><img alt="Situation désirée" src="../images/centralisationAD_desiree.png" /></p>
+<p>Comme les périphériques réseau (switches, routeurs, etc.) n’utilisent pas le protocole LDAP (AD), le serveur RADIUS sert d’intermédiaire. RADIUS relaie les requêtes vers l’AD afin que celui-ci vérifie les informations d’identification.</p>
+<h2 id="agdlp">AGDLP</h2>
+<p>Lors de la mise en place de l’AD, il nous faut réfléchir à un concept AGDLP afin d’avoir un aperçu global de l’infrastructure à mettre en place.</p>
+<p><img alt="Schéma AGDLP" src="../images/centralisationAD_agdlp.png" /></p>
+<h1 id="realisation">Réalisation</h1>
+<h2 id="integration-sur-ad">Intégration sur AD</h2>
+<p>Maintenant que les serveurs DNS et DHCP sont installés et fonctionnels, il faut commencer à migrer les services vers l’AD.
+Nous allons commencer par les utilisateurs OpenVPN et Jumphost ainsi que le serveur RADIUS car il s’agit de services et des utilisateurs les plus utilisés et dont il est important de migrer en premier.</p>
+<h2 id="openvpn">OpenVPN</h2>
+<h3 id="regles-pares-feux">Règles pares-feux</h3>
+<p>Comme le VPN se trouve dans la DMZ, il faut d’abord ajouter deux règles sur les pares-feux afin de le laisser communiquer avec les AD qui se trouve dans le MGMT :</p>
+<p><img alt="Règles FW" src="../images/firewall.png" /></p>
+<h3 id="configurations-dauthentification">Configurations d’authentification</h3>
+<p>Depuis l’interface OpenVPN, aller dans la section « Authentication-LDAP » :</p>
+<p><img alt="Authentification" src="../images/authentificationLDAP.png" /></p>
+<p>Puis, insérer les informations permettant de se connecter avec les identifiants qui se trouvent sur les serveurs AD :</p>
+<p><img alt="Configurations" src="../images/configLDAP.png" /></p>
+<p>Enfin, dans les « settings » des authentifications, sélectionner le bouton « LDAP » :</p>
+<p><img alt="Activation" src="../images/activLDAP.png" /></p>
+<h2 id="jumphost">Jumphost</h2>
+<p>En ce qui concerne le jumphost, nous avons changé l’adresse du DNS puis avons intégré la VM dans le domaine du nouvel AD « emfnet.ch ».</p>
+<p><img alt="Domaine" src="../images/jumphost.png" /></p>
+<h2 id="radius">Radius</h2>
+<p>Pour que le serveur RADIUS puisse rediriger les requêtes d’authentification qu’il reçoit des périphériques réseau vers l’AD, il faut que le service FreeRADIUS puisse communiquer avec le serveur AD.</p>
+<h3 id="configurations-ldap-joindre-le-domaine-ad">Configurations LDAP – Joindre le domaine AD</h3>
+<p>Pour se faire, installer et configurer <strong>freeradius</strong> sur le serveur RADIUS :</p>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install freeradius freeradius-ldap
+</code></pre>
+<p>Puis configurer le fichier de configurations LDAP (/etc/freeradius/3.0/mods-enabled/ldap) :</p>
+<pre><code class="language-bash">server = &quot;ad.example.com&quot;             # Replace with your AD server's address
+identity = &quot;cn=binduser,dc=example,dc=com&quot;  # Replace with an AD user with bind permissions
+password = &quot;binduser_password&quot;        # Password for the bind user
+
+base_dn = &quot;dc=example,dc=com&quot;       # Replace with your AD domain
+filter = &quot;(sAMAccountName=%{%{Stripped-User-Name}:-%{User-Name}})&quot;
+
+start_tls = yes                     # Enables TLS for security
+# Set the default_pool setting to optimize connections to the AD server
+default_pool {
+    start = 5
+    min = 3
+    max = 32
+    spare = 3
+</code></pre>
+<p>Activer le module LDAP dans FreeRADIUS en effectuant un lien symbolique du fichier de configuration (mods-available) vers le répertoire « mods-enabled » (si ce n’est pas déjà fait) :</p>
+<pre><code class="language-bash">ln -s /etc/freeradius/3.0/mods-available/ldap /etc/freeradius/3.0/mods-enabled/ldap
+</code></pre>
+<p>Afin que les utilisateurs qui se trouvent sur l’AD puissent utiliser leurs identifiants pour se connecter sur les périphériques réseau, il faut indiquer à FreeRADIUS d’utiliser « ldap » dans le fichier « /etc/freeradius/3.0/sites-enabled/default »</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

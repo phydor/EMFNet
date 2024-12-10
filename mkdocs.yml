@@ -1,0 +1,20 @@
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+extra:
+  favicon: images/LogoEMFNet.png
+
+site_name: EMFpédia
+
+theme:
+  name: null
+  custom_dir: 'cinder'
+
+nav:
+  - A propos : emfnet.md
+  - Schémas : schemas.md
+  - Nutanix : nutanix.md
+  - Centralisation AD: centralisationAD.md
+

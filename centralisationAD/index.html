@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    
+    <title>Centralisation AD - EMFpédia</title>
+    
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/v4-shims.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//rsms.me/inter/inter.css' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../css/base.min.css" rel="stylesheet">
+    <link href="../css/cinder.min.css" rel="stylesheet">
+
+    
+        
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/github.min.css">
+        
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    
+
+     
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            
+              <a class="navbar-brand" href="..">EMFpédia</a>
+            
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../emfnet/">A propos</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../schemas/">Schémas</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../nutanix/">Nutanix</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Centralisation AD</a>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../nutanix/">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a rel="next" >
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#analyse">Analyse</a></li>
+            <li class="second-level"><a href="#cahier-des-charges">Cahier des charges</a></li>
+                
+        <li class="first-level "><a href="#conception">Conception</a></li>
+            <li class="second-level"><a href="#situation-initiale">Situation initiale</a></li>
+                
+            <li class="second-level"><a href="#situation-desiree">Situation désirée</a></li>
+                
+            <li class="second-level"><a href="#agdlp">AGDLP</a></li>
+                
+        <li class="first-level "><a href="#realisation">Réalisation</a></li>
+            <li class="second-level"><a href="#integration-sur-ad">Intégration sur AD</a></li>
+                
+            <li class="second-level"><a href="#openvpn">OpenVPN</a></li>
+                
+                <li class="third-level"><a href="#regles-pares-feux">Règles pares-feux</a></li>
+                <li class="third-level"><a href="#configurations-dauthentification">Configurations d’authentification</a></li>
+            <li class="second-level"><a href="#jumphost">Jumphost</a></li>
+                
+            <li class="second-level"><a href="#radius">Radius</a></li>
+                
+                <li class="third-level"><a href="#configurations-ldap-joindre-le-domaine-ad">Configurations LDAP – Joindre le domaine AD</a></li>
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="analyse">Analyse</h1>
+<p>Pour ce projet, le but est de mettre en place un serveur Active Directory pour centraliser tous les accès EMFNet. L’idée est de rediriger l’authentification des systèmes (Radius, Nutanix, VPN, etc.) vers cet AD afin de pouvoir n’utiliser plus qu’un seul login pour tous les systèmes et ainsi éviter de devoir se souvenir quel compte correspond à quel appareil ou interface.</p>
+<h2 id="cahier-des-charges">Cahier des charges</h2>
+<ul>
+<li>Centraliser les accès des systèmes vers un AD</li>
+<li>Mettre en place un serveur Active Directory</li>
+<li>Le serveur RADIUS relaie les requêtes à l’AD</li>
+<li>Création de groupes / utilisateurs</li>
+<li>Gestion des droits</li>
+<li>Migration des services<ul>
+<li>Radius</li>
+<li>Nutanix</li>
+<li>PRTG</li>
+<li>SonicWall</li>
+</ul>
+</li>
+<li>Migration des utilisateurs</li>
+<li>Rédiger une documentation pour les utilisateurs</li>
+</ul>
+<h1 id="conception">Conception</h1>
+<h2 id="situation-initiale">Situation initiale</h2>
+<p>Sur le schéma ci-dessous, lorsqu’un utilisateur souhaite se connecter à un périphérique réseau ou à des interfaces de management, il lui faut utiliser plusieurs identifiants différents. Cela implique une mise en place d’outils comme KeePass pour pouvoir se rappeler quel mot de passe et quel nom d’utilisateur utiliser pour se connecter.
+Ici, il nous faut 6 comptes et mot de passe différents à retenir :
+<img alt="Situation initale" src="../images/centralisation/centralisationAD_initiale.png" /></p>
+<h2 id="situation-desiree">Situation désirée</h2>
+<p>Notre projet consiste donc à centraliser tous les accès afin que l’utilisateur puisse accéder aux périphériques et aux interfaces avec un seul et même identifiant :</p>
+<p><img alt="Situation désirée" src="../images/centralisation/centralisationAD_desiree.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Comme les périphériques réseau (switches, routeurs, etc.) n’utilisent pas le protocole LDAP (AD), le serveur RADIUS sert d’intermédiaire. RADIUS relaie les requêtes vers l’AD afin que celui-ci vérifie les informations d’identification.</p>
+</div>
+<h2 id="agdlp">AGDLP</h2>
+<p>Lors de la mise en place de l’AD, il nous faut réfléchir à un concept AGDLP afin d’avoir un aperçu global de l’infrastructure à mettre en place.</p>
+<p><img alt="Schéma AGDLP" src="../images/centralisation/centralisationAD_agdlp.png" /></p>
+<h1 id="realisation">Réalisation</h1>
+<h2 id="integration-sur-ad">Intégration sur AD</h2>
+<p>Maintenant que les serveurs DNS et DHCP sont installés et fonctionnels, il faut commencer à migrer les services vers l’AD.
+Nous allons commencer par les utilisateurs OpenVPN et Jumphost ainsi que le serveur RADIUS car il s’agit de services et des utilisateurs les plus utilisés et dont il est important de migrer en premier.</p>
+<h2 id="openvpn">OpenVPN</h2>
+<h3 id="regles-pares-feux">Règles pares-feux</h3>
+<p>Comme le VPN se trouve dans la DMZ, il faut d’abord ajouter deux règles sur les pares-feux afin de le laisser communiquer avec les AD qui se trouve dans le MGMT :</p>
+<p><img alt="Règles FW" src="../images/centralisation/firewall.png" /></p>
+<h3 id="configurations-dauthentification">Configurations d’authentification</h3>
+<p>Depuis l’interface OpenVPN, aller dans la section « Authentication-LDAP » :</p>
+<p><img alt="Authentification" src="../images/centralisation/authentificationLDAP.png" /></p>
+<p>Puis, insérer les informations permettant de se connecter avec les identifiants qui se trouvent sur les serveurs AD :</p>
+<p><img alt="Configurations" src="../images/centralisation/configLDAP.png" /></p>
+<p>Enfin, dans les « settings » des authentifications, sélectionner le bouton « LDAP » :</p>
+<p><img alt="Activation" src="../images/centralisation/activLDAP.png" /></p>
+<h2 id="jumphost">Jumphost</h2>
+<p>En ce qui concerne le jumphost, nous avons changé l’adresse du DNS puis avons intégré la VM dans le domaine du nouvel AD « emfnet.ch ».</p>
+<p><img alt="Domaine" src="../images/centralisation/jumphost.png" /></p>
+<h2 id="radius">Radius</h2>
+<p>Pour que le serveur RADIUS puisse rediriger les requêtes d’authentification qu’il reçoit des périphériques réseau vers l’AD, il faut que le service FreeRADIUS puisse communiquer avec le serveur AD.</p>
+<h3 id="configurations-ldap-joindre-le-domaine-ad">Configurations LDAP – Joindre le domaine AD</h3>
+<p>Pour se faire, installer et configurer <strong>freeradius</strong> sur le serveur RADIUS :</p>
+<p><div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>freeradius<span class="w"> </span>freeradius-ldap
+</code></pre></div>
+Puis configurer le fichier de configurations LDAP (/etc/freeradius/3.0/mods-enabled/ldap) :
+<div class="highlight"><pre><span></span><code><span class="nv">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ad.example.com&quot;</span><span class="w">             </span><span class="c1"># Replace with your AD server&#39;s address</span>
+<span class="nv">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;cn=binduser,dc=example,dc=com&quot;</span><span class="w">  </span><span class="c1"># Replace with an AD user with bind permissions</span>
+<span class="nv">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;binduser_password&quot;</span><span class="w">        </span><span class="c1"># Password for the bind user</span>
+
+<span class="nv">base_dn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dc=example,dc=com&quot;</span><span class="w">       </span><span class="c1"># Replace with your AD domain</span>
+<span class="nv">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;(sAMAccountName=%{%{Stripped-User-Name}:-%{User-Name}})&quot;</span>
+
+<span class="nv">start_tls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>yes<span class="w">                     </span><span class="c1"># Enables TLS for security</span>
+<span class="c1"># Set the default_pool setting to optimize connections to the AD server</span>
+default_pool<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nv">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+<span class="w">    </span><span class="nv">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">    </span><span class="nv">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">32</span>
+<span class="w">    </span><span class="nv">spare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+</code></pre></div>
+Activer le module LDAP dans FreeRADIUS en effectuant un lien symbolique du fichier de configuration (mods-available) vers le répertoire « mods-enabled » (si ce n’est pas déjà fait) :</p>
+<p><div class="highlight"><pre><span></span><code>ln<span class="w"> </span>-s<span class="w"> </span>/etc/freeradius/3.0/mods-available/ldap<span class="w"> </span>/etc/freeradius/3.0/mods-enabled/ldap
+</code></pre></div>
+Afin que les utilisateurs qui se trouvent sur l’AD puissent utiliser leurs identifiants pour se connecter sur les périphériques réseau, il faut indiquer à FreeRADIUS d’utiliser « ldap » dans le fichier « /etc/freeradius/3.0/sites-enabled/default »</p></div>
+        
+        
+    </div>
+
+    
+      <footer class="col-md-12 text-center">
+          
+          
+            <hr>
+            <p>
+            <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</small>
+            </p>
+          
+
+          
+          
+      </footer>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+
+    
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+        
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    <script>var base_url = ".."</script>
+    
+    <script src="../js/base.js"></script>
+    <script src="../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+
+</html>
